@@ -1,0 +1,88 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="WP8Bootstrap.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:converters="clr-namespace:WP8Bootstrap.Converters"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:abu="clr-namespace:AppBarUtils;assembly=AppBarUtils"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="ThisPage"
+    d:DataContext="{d:DesignData /SampleData/MainViewModelSampleData.xaml}"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    toolkit:TransitionService.NavigationInTransition="{StaticResource PageInTransition}"
+    toolkit:TransitionService.NavigationOutTransition="{StaticResource PageOutTransition}"
+    toolkit:TiltEffect.IsTiltEnabled="True"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TitlePanel contains the name of the application and page title -->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Text="{Binding Path=LocalizedResources.MainPageTitle, Source={StaticResource LocalizedStrings}}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!-- ContentPanel contains LongListSelector and LongListSelector ItemTemplate. Place additional content here -->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <phone:LongListSelector x:Name="MainLongListSelector" Margin="0,0,-12,0" ItemsSource="{Binding Items}">
+                <phone:LongListSelector.ItemTemplate>
+                    <DataTemplate>
+                      <StackPanel Margin="0,0,0,17">
+                          <TextBlock Text="{Binding LineOne}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+                          <TextBlock Text="{Binding LineTwo}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+                          <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Tap">
+                                    <i:InvokeCommandAction Command="{Binding DataContext.ViewItemDetailsCommand, ElementName=ThisPage}" CommandParameter="{Binding}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </StackPanel>
+                    </DataTemplate>
+                </phone:LongListSelector.ItemTemplate>
+            </phone:LongListSelector>
+        </Grid>
+
+        <StackPanel x:Name="LoadingMessage" Grid.Row="1" Width="250" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConveter}}">
+            <TextBlock Text="{Binding Path=LocalizedResources.LoadingMessage, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextSubtleStyle}" FontSize="{StaticResource PhoneFontSizeSmall}" HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel x:Name="ErrorMessage" Grid.Row="1" Margin="12,0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsError, Converter={StaticResource BoolToVisibilityConveter}}">
+            <TextBlock Text="{Binding Path=LocalizedResources.ErrorMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="{StaticResource PhoneFontSizeMediumLarge}" />
+            <Button Content="{Binding Path=LocalizedResources.TryAgainText, Source={StaticResource LocalizedStrings}}" Command="{Binding LoadDataCommand}" />
+        </StackPanel>
+
+        <!-- Alignment Grid - Set margin to 0 if the System Tray is hidden. -->
+        <!--<Image Source="/Assets/AlignmentGrid.png" VerticalAlignment="Top" Height="800" Width="480" Margin="0,-32,0,0" Grid.Row="0" Grid.RowSpan="2" IsHitTestVisible="False" />-->
+    </Grid>
+
+    <!-- ApplicationBar -->
+    <!-- Uncomment to use
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+            <shell:ApplicationBarIconButton IconUri="/Toolkit.Content/ApplicationBar.Check.png" Text="save" />
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+    <i:Interaction.Behaviors>
+        <abu:AppBarItemCommand Id="save" Type="Button" Command="{Binding LoadDataCommand}" />
+    </i:Interaction.Behaviors>
+    -->
+
+</phone:PhoneApplicationPage>
